@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import InvitationCover from '../components/InvitationCover.astro';
+import InvitationHero from '../components/InvitationHero.astro';
+import InvitationFamilies from '../components/InvitationFamilies.astro';
+import InvitationSchedule from '../components/InvitationSchedule.astro';
+import InvitationAlbum from '../components/InvitationAlbum.astro';
+import InvitationRsvp from '../components/InvitationRsvp.astro';
+import InvitationThanks from '../components/InvitationThanks.astro';
+import site from '../data/site.json';
+import '../styles/invitation-motion.css';
+
+const showFamilies = true;
+---
+
+<BaseLayout title={site.title}>
+  <main class="invitation-frame">
+    <div class="invitation-card">
+      <div class="invitation-inside" data-invitation-inside tabindex="-1" aria-label="Nội dung thiệp cưới" inert>
+        <InvitationHero />
+        <div class="invitation-event-block" data-invitation-events>
+          {showFamilies && <InvitationFamilies />}
+          <InvitationSchedule />
+        </div>
+        <InvitationAlbum />
+        <InvitationRsvp />
+        <InvitationThanks />
+      </div>
+      <InvitationCover />
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  import '../scripts/invitation-motion';
+</script>
+
+<style>
+  .invitation-event-block {
+    position: relative;
+    isolation: isolate;
+    background: linear-gradient(180deg, #faf7f0 0%, #f7f5ec 23%, #eef0e5 52%, #e6eadf 78%);
+  }
+
+  .invitation-event-block::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background: url('/images/paper-grain.svg');
+    opacity: .22;
+    pointer-events: none;
+  }
+
+  .invitation-frame {
+    width: 100%;
+    max-width: 430px;
+    margin-inline: auto;
+  }
+
+  .invitation-card {
+    position: relative;
+    container-type: inline-size;
+    min-height: 100svh;
+    min-height: 100dvh;
+    overflow: hidden;
+    overflow: clip;
+    background: var(--color-surface);
+    box-shadow: 0 8px 36px rgb(64 45 45 / 9%);
+  }
+
+  .invitation-inside {
+    min-height: 100svh;
+    min-height: 100dvh;
+    outline: none;
+  }
+
+  .invitation-inside[inert] {
+    height: 100svh;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+</style>

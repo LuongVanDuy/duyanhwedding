@@ -1,0 +1,220 @@
+---
+import GalleryMore from './GalleryMore.astro';
+import { buildGalleries, photoSources } from '../lib/wedding-gallery';
+import AlbumPhoto from './AlbumPhoto.astro';
+import '@fontsource/great-vibes/400.css';
+import '@fontsource/cormorant-garamond/400.css';
+import album from '../data/wedding-album.json';
+import wedding from '../data/wedding.json';
+const galleries = await buildGalleries();
+const allPhotos = galleries.flatMap(group => group.photos.map(photo => ({ ...photo, group: group.id })));
+const photos = album.photos.map(photo => {
+  const full = allPhotos.find(item => item.id === photo.id)!;
+  return { ...photo, src: photoSources[photo.id], full: { src: full.full } };
+});
+
+---
+
+<section class="album-section" aria-labelledby="album-title" data-album>
+  <div data-motion-zone class="garden-chapter" data-gallery-group="garden">
+    <header class="album-heading" data-album-reveal>
+      <p class="album-edition"><span>{wedding.couple.groom.givenName} &amp; {wedding.couple.bride.givenName}</span><span>2026</span></p>
+      <h2 id="album-title"><span>{album.titleLines[0]}</span><em>{album.titleLines[1]}</em></h2>
+    </header>
+    <div class="garden-intro" data-reveal>
+      <p class="chapter-kicker"><span>I.</span> {album.chapters.garden.label}</p>
+      <p class="garden-caption">{album.chapters.garden.caption}</p>
+    </div>
+    <div class="portraits-spread" data-album-reveal>
+      <span class="outline-arch" aria-hidden="true"></span>
+      <figure class="portrait-print groom-print">
+        <AlbumPhoto photo={photos[0]} index={0} sizes="(max-width: 430px) 45vw, 190px" />
+        <figcaption>{wedding.couple.groom.givenName}</figcaption>
+      </figure>
+      <figure class="portrait-print bride-print">
+        <AlbumPhoto photo={photos[1]} index={1} sizes="(max-width: 430px) 45vw, 190px" />
+        <figcaption>{wedding.couple.bride.givenName}</figcaption>
+      </figure>
+    </div>
+    <div class="garden-vows" data-album-reveal>
+      <p>Mình cùng<br />nên duyên</p>
+      <AlbumPhoto photo={photos[2]} index={2} class="photo-garden-vows" sizes="(max-width: 430px) 70vw, 300px" />
+    </div>
+    <svg class="garden-branch" data-reveal viewBox="0 0 150 50" fill="none" aria-hidden="true">
+      <path d="M8 42C56 43 101 28 140 8M37 39C28 31 28 21 28 21C42 24 46 33 37 39ZM60 34C51 23 55 12 55 12C69 19 72 28 60 34ZM83 27C91 38 104 35 104 35C99 24 91 22 83 27ZM105 20C99 10 105 2 105 2C116 7 116 16 105 20ZM118 15C128 24 140 20 140 20C135 13 126 11 118 15Z" stroke="currentColor" stroke-width=".8" />
+    </svg>
+    <GalleryMore group="garden" />
+  </div>
+
+  <div data-motion-zone class="together-chapter" data-gallery-group="green">
+    <header class="chapter-heading" data-album-reveal>
+      <p class="chapter-kicker"><span>II.</span> {album.chapters.together.label}</p>
+      <h3>{album.chapters.together.title}</h3>
+    </header>
+    <div class="green-spread" data-album-reveal>
+      <span class="outline-arch" aria-hidden="true"></span>
+      <AlbumPhoto photo={photos[3]} index={3} class="photo-green-main" sizes="(max-width: 430px) 74vw, 318px" />
+      <figure class="green-print">
+        <AlbumPhoto photo={photos[4]} index={4} sizes="(max-width: 430px) 45vw, 194px" />
+        <figcaption>Một đời bên nhau</figcaption>
+      </figure>
+    </div>
+    <div class="vows-spread" data-album-reveal>
+      <p>{album.chapters.together.caption}</p>
+      <AlbumPhoto photo={photos[5]} index={5} class="photo-vows" sizes="(max-width: 430px) 67vw, 290px" />
+      <span class="vows-date" aria-hidden="true">24 — 25 / 10 / 2026</span>
+    </div>
+    <GalleryMore group="green" />
+  </div>
+
+  <div data-motion-zone class="celebration-chapter" data-gallery-group="red">
+    <header class="chapter-heading" data-album-reveal>
+      <p class="chapter-kicker"><span>III.</span> {album.chapters.celebration.label}</p>
+      <h3>{album.chapters.celebration.title}</h3>
+    </header>
+    <div class="red-spread" data-album-reveal>
+      <span class="love-stamp" aria-hidden="true"><span>Duy</span><i>&amp;</i><span>Ánh</span></span>
+      <AlbumPhoto photo={photos[6]} index={6} class="photo-red" />
+      <figure class="playful-print">
+        <AlbumPhoto photo={photos[7]} index={7} sizes="(max-width: 430px) 45vw, 190px" />
+        <figcaption>{album.chapters.celebration.label}</figcaption>
+      </figure>
+    </div>
+    <p class="celebration-caption" data-reveal>{album.chapters.celebration.caption}</p>
+    <div class="last-spread" data-album-reveal>
+      <span class="forever-word" aria-hidden="true">mãi thương</span>
+      <AlbumPhoto photo={photos[8]} index={8} class="photo-white" sizes="(max-width: 430px) 76vw, 327px" />
+      <svg class="handwritten-heart" viewBox="0 0 100 95" fill="none" aria-hidden="true">
+        <path d="M51 77C30 59 6 44 13 24C20 6 42 14 49 34C51 8 78 5 86 22C98 46 69 71 48 87" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+      </svg>
+    </div>
+    <GalleryMore group="red" />
+    <footer class="album-closing" data-reveal><p>{album.closing}</p><span aria-hidden="true">D &amp; A</span></footer>
+  </div>
+
+  <script type="application/json" data-gallery-catalog set:html={JSON.stringify(galleries).replace(/</g, '\u003c')} />
+  <dialog id="wedding-photo-viewer" class="photo-viewer" aria-labelledby="viewer-title" data-photo-viewer>
+    <div class="viewer-header">
+      <div class="viewer-heading">
+        <p class="viewer-edition">Duy &amp; Ánh <span aria-hidden="true">·</span> 2026</p>
+        <h3 id="viewer-title" data-gallery-title>{wedding.couple.groom.givenName} &amp; {wedding.couple.bride.givenName}</h3>
+      </div>
+      <button type="button" class="viewer-close" data-close aria-label="Đóng ảnh">Đóng <span aria-hidden="true">×</span></button>
+    </div>
+    <div class="viewer-stage" data-stage aria-busy="false">
+      <img data-viewer-image alt="" decoding="async" />
+      <p class="viewer-status" data-status role="status"></p>
+    </div>
+    <div class="viewer-controls">
+      <button type="button" data-previous aria-label="Ảnh trước"><span aria-hidden="true">←</span></button>
+      <p data-counter aria-live="polite" aria-atomic="true"></p>
+      <button type="button" data-next aria-label="Ảnh tiếp theo"><span aria-hidden="true">→</span></button>
+    </div>
+  </dialog>
+</section>
+
+<script>
+  import '../scripts/wedding-gallery';
+</script>
+
+<style>
+  .album-section {
+    --album-forest: #243c30;
+    --album-paper: #f8f3e9;
+    --album-burgundy: #713c37;
+    --album-line: #b9b79d;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    color: var(--album-forest);
+    background: var(--album-paper);
+  }
+  .garden-chapter, .together-chapter, .celebration-chapter { position: relative; isolation: isolate; }
+  .garden-chapter::before, .together-chapter::before, .celebration-chapter::before { content: ''; position: absolute; z-index: -1; inset: 0; background: url('/images/paper-grain.svg'); opacity: .2; pointer-events: none; }
+  .garden-chapter { padding: 35px 0 28px; background: var(--album-forest); color: #f8f1df; }
+  .album-heading { padding-inline: 26px; padding-bottom: 28px; }
+  .album-edition { display: flex; justify-content: space-between; margin: 0 0 37px; padding-bottom: 12px; border-bottom: 1px solid rgb(226 223 196 / 35%); font-size: 14px; letter-spacing: .2em; text-transform: uppercase; }
+  h2 { position: relative; z-index: 1; margin: 0; font-weight: 400; text-align: center; }
+  h2 > span { display: block; font-size: clamp(27px, 8cqw, 35px); line-height: 1.3; letter-spacing: .12em; text-transform: uppercase; }
+  h2 em { display: block; margin-top: -3px; font: 400 clamp(68px, 20cqw, 88px)/1.3 'Great Vibes', cursive; }
+  .garden-intro { padding-inline: 26px; }
+  .garden-caption { max-width: 280px; margin: 12px 0 0; font-size: 20px; line-height: 1.45; }
+  .garden-chapter .portrait-print { color: var(--album-forest); }
+  .garden-chapter .outline-arch { border-color: rgb(226 223 196 / 45%); }
+  .garden-vows { position: relative; margin: 34px 6% 0; padding-left: 22%; }
+  .garden-vows :global(.photo-garden-vows) { padding: 5px; border: 1px solid rgb(226 223 196 / 45%); }
+  .garden-vows > p { position: absolute; left: -1%; top: 33%; margin: 0; font: 400 clamp(29px, 8.5cqw, 37px)/1.4 'Great Vibes', cursive; writing-mode: vertical-rl; transform: rotate(180deg); }
+  .garden-branch { display: block; width: 110px; height: 37px; margin: 18px 26px 0 auto; color: #bac5a7; }
+
+  .together-chapter { padding: 51px 0 35px; }
+  .chapter-heading { position: relative; padding-inline: 28px; }
+  .chapter-kicker { display: flex; align-items: baseline; gap: 12px; margin: 0 0 6px; font-size: 14px; letter-spacing: .18em; text-transform: uppercase; }
+  .chapter-kicker span { font-size: 24px; font-style: italic; letter-spacing: 0; }
+  .chapter-heading h3 { margin: 0; font: 400 clamp(35px, 10.6cqw, 46px)/1.35 'Great Vibes', cursive; }
+  .portraits-spread { position: relative; display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 5%; margin: 42px 6% 0; }
+  .outline-arch { position: absolute; z-index: -1; top: -20px; left: 10%; width: 80%; height: 92%; border: 1px solid var(--album-line); border-radius: 180px 180px 0 0; pointer-events: none; }
+  .portrait-print { min-width: 0; margin: 0; padding: 5px 5px 0; background: #fffdf6; box-shadow: 0 8px 22px rgb(51 48 30 / 12%); }
+  .groom-print { transform: rotate(-4deg); }
+  .bride-print { margin-top: 58px; transform: rotate(4deg); }
+  .portrait-print figcaption { padding: 8px 2px 10px; text-align: center; font: 400 27px/1.4 'Great Vibes', cursive; }
+  .green-spread { position: relative; margin: 40px 0 0; padding-bottom: 36%; }
+  .green-spread :global(.photo-green-main) { width: 74%; margin-left: 6%; }
+  .green-print { position: absolute; z-index: 1; right: 6%; bottom: 0; width: 45%; margin: 0; padding: 6px 6px 0; color: var(--album-forest); background: #fffdf6; transform: rotate(5deg); box-shadow: 0 8px 22px rgb(51 48 30 / 12%); }
+  .green-print figcaption { padding: 8px 2px 10px; text-align: center; font: 400 23px/1.4 'Great Vibes', cursive; }
+  .vows-spread { position: relative; margin-top: 43px; padding: 0 7% 22px 0; }
+  .vows-spread :global(.photo-vows) { width: 72%; margin-left: auto; padding: 5px; border: 1px solid var(--album-line); }
+  .vows-spread > p { position: absolute; z-index: 1; top: 10%; left: 5%; width: 19%; margin: 0; font: 400 clamp(26px, 7.4cqw, 32px)/1.4 'Great Vibes', cursive; text-wrap: balance; }
+  .vows-date { display: block; margin: 15px 0 0 40%; color: #616953; font-size: 14px; letter-spacing: .14em; }
+
+  .celebration-chapter { padding: 40px 0 32px; color: var(--album-burgundy); background: #eee1d6; }
+  .celebration-chapter::after { content: ''; position: absolute; top: -10px; left: 0; right: 0; height: 11px; background: #eee1d6; clip-path: polygon(0 100%,0 30%,8% 55%,15% 20%,22% 45%,30% 15%,39% 65%,48% 30%,57% 50%,66% 10%,75% 55%,84% 30%,93% 60%,100% 15%,100% 100%); }
+  .celebration-chapter .chapter-heading { padding-left: 17%; }
+  .red-spread { position: relative; margin-top: 31px; padding-bottom: 35%; }
+  .red-spread :global(.photo-red) { width: 74%; margin-left: 20%; }
+  .love-stamp { position: absolute; z-index: 2; top: 22px; left: 4%; display: grid; align-content: center; width: 69px; height: 86px; border: 1px solid #996754; border-radius: 50%; outline: 1px solid rgb(153 103 84 / 45%); outline-offset: 4px; background: #f2e9da; font: 400 23px/1 'Great Vibes', cursive; text-align: center; transform: rotate(-13deg); pointer-events: none; }
+  .love-stamp i { font: italic 15px/1.3 'Cormorant Garamond', serif; }
+  .playful-print { position: absolute; z-index: 1; left: 6%; bottom: 0; width: 45%; margin: 0; padding: 6px 6px 0; background: #fff9ed; transform: rotate(-7deg); box-shadow: 0 8px 22px rgb(65 36 30 / 17%); }
+  .playful-print figcaption { padding: 8px 2px 10px; font: 400 21px/1.3 'Great Vibes', cursive; text-align: center; }
+  .celebration-caption { max-width: 245px; margin: 26px 7% 0 auto; text-align: right; font-size: 20px; line-height: 1.5; text-wrap: balance; }
+  .last-spread { position: relative; margin-top: 46px; padding: 49px 0 0; }
+  .last-spread :global(.photo-white) { width: 76%; margin: 0 auto; padding: 7px; background: #fffaf0; box-shadow: 0 5px 18px rgb(65 36 30 / 10%); }
+  .forever-word { position: absolute; z-index: 1; top: 0; left: 7%; font: 400 clamp(53px, 16cqw, 69px)/1.4 'Great Vibes', cursive; transform: rotate(-8deg); pointer-events: none; }
+  .handwritten-heart { position: absolute; right: 3%; bottom: 8%; width: 72px; height: 75px; transform: rotate(15deg); pointer-events: none; }
+  .album-closing { margin: 34px 30px 0; text-align: center; }
+  .album-closing p { max-width: 270px; margin: 0 auto; font-size: 19px; line-height: 1.5; text-wrap: balance; }
+  .album-closing > span { display: block; margin-top: 23px; padding-top: 19px; border-top: 1px solid rgb(113 60 55 / 25%); font-size: 14px; letter-spacing: .3em; }
+  @media (max-width: 350px) { .album-heading { padding-inline: 20px; } .love-stamp { width: 57px; height: 73px; } .vows-date { letter-spacing: .06em; } }
+
+  .photo-viewer {
+    --viewer-paper: #243c30; --viewer-ink: #f8f1df; --viewer-rule: #b9b79d66; --viewer-wash: #f8f1df12;
+    box-sizing: border-box; width: min(100%, 800px); max-width: 100vw; height: 100dvh; max-height: 100dvh; margin: auto;
+    padding: max(18px, env(safe-area-inset-top)) 20px max(16px, env(safe-area-inset-bottom)); border: 0;
+    color: var(--viewer-ink); background-color: var(--viewer-paper);
+    background-image: url('/images/paper-grain.svg'), radial-gradient(ellipse at 10% 0%, var(--viewer-wash), transparent 65%);
+    box-shadow: 0 18px 80px #101b1926;
+  }
+  .photo-viewer[data-theme='green'], .photo-viewer[data-theme='white'] { --viewer-paper: #f8f3e9; --viewer-ink: #344b3d; --viewer-rule: #9aa48788; --viewer-wash: #a9b99c18; }
+  .photo-viewer[data-theme='red'] { --viewer-paper: #eee1d6; --viewer-ink: #713c37; --viewer-rule: #a9786c77; --viewer-wash: #b8796c12; }
+  .photo-viewer::backdrop { background: rgb(22 39 29 / 84%); backdrop-filter: blur(7px); }
+  .photo-viewer[data-theme='green']::backdrop, .photo-viewer[data-theme='white']::backdrop { background: rgb(222 226 210 / 88%); }
+  .photo-viewer[data-theme='red']::backdrop { background: rgb(222 196 184 / 88%); }
+  .photo-viewer[open] { display: flex; flex-direction: column; }
+  .viewer-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-shrink: 0; padding-bottom: 14px; border-bottom: 1px solid var(--viewer-rule); }
+  .viewer-heading { min-width: 0; }
+  .viewer-edition { margin: 0 0 8px; font-size: 11px; line-height: 1.5; letter-spacing: .19em; text-transform: uppercase; }
+  .viewer-edition span { padding-inline: 5px; }
+  .viewer-header h3 { margin: 0; font: 400 clamp(27px, 7vw, 35px)/1.25 'Great Vibes', cursive; text-wrap: balance; }
+  .photo-viewer button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-width: 48px; min-height: 48px; padding: 8px 12px; border: 1px solid var(--viewer-rule); border-radius: 999px; color: inherit; background: transparent; font: 17px/1 'Cormorant Garamond', Georgia, serif; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  .photo-viewer .viewer-close { flex-shrink: 0; border-color: transparent; padding-right: 0; }
+  .viewer-close span { font-size: 28px; }
+  @media (hover: hover) { .photo-viewer button:hover { background: var(--viewer-wash); border-color: var(--viewer-ink); } }
+  .photo-viewer button:focus:not(:focus-visible) { outline: none; }
+  .photo-viewer button:focus-visible { outline: 1px solid var(--viewer-ink); outline-offset: 4px; }
+  .viewer-stage { position: relative; display: grid; place-items: center; flex: 1; min-height: 0; margin-block: 20px; }
+  .viewer-stage img { width: 100%; height: 100%; min-height: 0; object-fit: contain; }
+  .viewer-stage img[hidden] { display: none; }
+  .viewer-status { position: absolute; inset-inline: 16px; margin: 0; text-align: center; font-size: 18px; }
+  .viewer-status:empty { display: none; }
+  .viewer-controls { display: flex; align-items: center; justify-content: center; gap: 24px; flex-shrink: 0; padding-top: 14px; border-top: 1px solid var(--viewer-rule); }
+  .viewer-controls p { position: relative; min-width: 78px; margin: 0; font-size: 17px; font-style: italic; text-align: center; }
+  .viewer-controls p::before { content: '✧'; display: block; margin-bottom: 4px; font-size: 15px; font-style: normal; opacity: .7; }
+  .viewer-controls button { font-family: Arial, sans-serif; font-size: 24px; }
+</style>

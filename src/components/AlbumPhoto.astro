@@ -1,0 +1,38 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  photo: { id: string; src: ImageMetadata; full: { src: string }; alt: string };
+  index: number;
+  class?: string;
+  sizes?: string;
+}
+
+const { photo, index, class: className, sizes = '(max-width: 430px) 80vw, 350px' } = Astro.props;
+---
+
+<a
+  class:list={['album-photo', className]}
+  href={photo.full.src}
+  data-album-photo
+  data-photo-id={photo.id}
+  data-alt={photo.alt}
+  aria-label={`Xem ảnh ${index + 1}: ${photo.alt}`}
+>
+  <Image src={photo.src} alt={photo.alt} widths={[320, 480, 640, 800, 1024, 1280]} width={800} sizes={sizes}
+    format="webp" quality={88} loading="lazy" decoding="async" />
+  <svg class="expand-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M8 4H4V8M16 4H20V8M20 16V20H16M8 20H4V16" stroke="currentColor" stroke-width="1.4" />
+  </svg>
+</a>
+
+<style>
+  .album-photo { position: relative; isolation: isolate; display: block; color: #fffdf5; cursor: zoom-in; -webkit-tap-highlight-color: transparent; }
+  img { display: block; width: 100%; height: auto; }
+  .expand-icon { position: absolute; z-index: 2; right: 10px; bottom: 10px; width: 28px; height: 28px; padding: 4px; background: rgb(25 39 31 / 65%); border: 1px solid rgb(255 255 255 / 45%); border-radius: 50%; transition: background 180ms ease; }
+  .album-photo:hover .expand-icon { background: #344b3d; }
+  .album-photo:focus { outline: none; }
+  .album-photo:focus-visible .expand-icon { outline: 2px solid #fffdf5; outline-offset: 3px; background: #344b3d; }
+  @media (prefers-reduced-motion: reduce) { .expand-icon { transition: none; } }
+</style>

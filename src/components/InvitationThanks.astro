@@ -1,0 +1,70 @@
+---
+import GalleryMore from './GalleryMore.astro';
+import { Image } from 'astro:assets';
+import '@fontsource/great-vibes/400.css';
+import '@fontsource/cormorant-garamond/400.css';
+import wedding from '../data/wedding.json';
+import content from '../data/wedding-thanks.json';
+import photo from '../assets/wedding/edited/DSC01712.jpg';
+---
+
+<section class="thanks-section" aria-labelledby="thanks-title" data-motion-zone>
+  <header>
+    <p class="eyebrow" data-reveal>{content.eyebrow}</p>
+    <h2 id="thanks-title" data-reveal>{content.title}</h2>
+  </header>
+  <div class="last-photo" data-reveal>
+    <div class="photo-outline" aria-hidden="true"></div>
+    <figure>
+      <Image src={photo} alt={content.photoAlt} widths={[320, 480, 640, 800, 1024, 1280]} width={800}
+        sizes="(max-width: 430px) 80vw, 340px" format="webp" quality={88} loading="lazy" decoding="async" />
+      <figcaption>{content.photoCaption}</figcaption>
+    </figure>
+    <svg class="olive-sprig" viewBox="0 0 100 190" fill="none" aria-hidden="true">
+      <g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 181C53 135 58 76 77 14" stroke-width="1.4" />
+        <path d="M39 148C9 139 10 123 8 116c19 3 34 15 31 32ZM46 125c31 4 36-13 42-20-21-3-37 5-42 20ZM52 105C23 95 23 77 25 71c16 8 29 18 27 34ZM58 83c25 1 31-17 31-25-18 4-30 10-31 25ZM64 59C44 50 46 31 48 24c13 10 20 22 16 35ZM71 36c18-7 22-25 19-32-11 8-19 16-19 32Z" fill="#e3e5d5" stroke-width=".9" />
+      </g>
+    </svg>
+    <span class="photo-edition" aria-hidden="true">D & A · 2026</span>
+  </div>
+  <GalleryMore group="white" />
+  <div class="thanks-letter">
+    <p data-reveal>{content.message}</p>
+    <p class="closing-line" data-reveal>{content.closing}</p>
+    <p class="couple-signature" data-reveal>{wedding.couple.groom.shortName}<span>&amp;</span>{wedding.couple.bride.shortName}</p>
+  </div>
+  <footer class="invitation-end" data-reveal>
+    <svg viewBox="0 0 180 30" fill="none" aria-hidden="true">
+      <path d="M5 15h52m66 0h52M68 15l5-3 5 3-5 3-5-3Zm34 0 5-3 5 3-5 3-5-3ZM90 11c-5-7-13 3 0 11 13-8 5-18 0-11Z" stroke="currentColor" stroke-width=".8" />
+    </svg>
+    <p>Ninh Bình · Tháng 10, 2026</p>
+    <a href="#couple-names">Về đầu thiệp <span aria-hidden="true">↑</span></a>
+  </footer>
+</section>
+
+<style>
+  .thanks-section { --thanks-ink: #344b3d; --thanks-muted: #686853; --thanks-rule: #b8bda4; position: relative; isolation: isolate; padding: 55px 24px 25px; color: var(--thanks-ink); background: #f8f3e9; font-family: 'Cormorant Garamond', Georgia, serif; text-align: center; }
+  .thanks-section::before { content: ''; position: absolute; z-index: -1; inset: 0; background: url('/images/paper-grain.svg'); opacity: .25; pointer-events: none; }
+  .eyebrow { margin: 0 0 15px; font-size: 14px; line-height: 1.6; letter-spacing: .16em; text-transform: uppercase; text-wrap: balance; }
+  h2 { margin: 0; font: 400 clamp(56px, 16cqw, 69px)/1.3 'Great Vibes', cursive; }
+  .last-photo { position: relative; margin: 32px 12px 27px; }
+  figure { position: relative; margin: 0; padding: 8px 8px 0; border: 1px solid #d7d2c2; border-radius: 48% 48% 0 0 / 30% 30% 0 0; background: #fffcf5; box-shadow: 0 8px 20px #344b3d14; }
+  figure img { display: block; width: 100%; height: auto; aspect-ratio: 2 / 3; object-fit: cover; border-radius: 48% 48% 0 0 / 30% 30% 0 0; }
+  figcaption { padding: 17px 2px 19px; font: 400 clamp(22px, 6.7cqw, 29px)/1.4 'Great Vibes', cursive; }
+  .photo-outline { position: absolute; inset: -12px 13px 38px -12px; border: 1px solid var(--thanks-rule); border-radius: 48% 48% 0 0 / 30% 30% 0 0; transform: rotate(-4deg); }
+  .olive-sprig { position: absolute; left: -32px; bottom: 28px; width: 73px; height: 143px; color: #7b8967; transform: rotate(-13deg); pointer-events: none; }
+  .photo-edition { position: absolute; top: 51%; right: -23px; writing-mode: vertical-rl; font-size: 11px; letter-spacing: .22em; }
+  .thanks-letter { padding: 0 11px; }
+  .thanks-letter > p:first-child { margin: 0; font-size: 20px; line-height: 1.65; text-wrap: pretty; }
+  .closing-line { margin: 20px 0 24px; font-size: 20px; font-style: italic; text-wrap: balance; }
+  .couple-signature { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 0 9px; margin: 0; font: 400 clamp(29px, 8.7cqw, 37px)/1.5 'Great Vibes', cursive; }
+  .couple-signature span { font: 400 22px/1 'Cormorant Garamond', Georgia, serif; }
+  .invitation-end { margin-top: 24px; color: var(--thanks-muted); }
+  .invitation-end svg { width: 160px; height: 30px; }
+  .invitation-end p { margin: 11px 0 4px; font-size: 16px; letter-spacing: .08em; }
+  .invitation-end a { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; gap: 10px; padding: 8px 14px; color: var(--thanks-ink); font-size: 18px; text-underline-offset: 4px; }
+  .invitation-end a:hover { text-decoration-thickness: 2px; }
+  .invitation-end a:focus-visible { outline: 2px solid var(--thanks-ink); outline-offset: 2px; }
+  @media (max-width: 350px) { .thanks-section { padding-inline: 20px; } .thanks-letter { padding-inline: 0; } .last-photo { margin-inline: 10px; } .olive-sprig { left: -26px; width: 61px; } }
+</style>

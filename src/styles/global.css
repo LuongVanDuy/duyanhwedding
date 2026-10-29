@@ -1,0 +1,21 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: light;
+  --color-background: #f2e6e8;
+  --color-surface: #f6f1e8;
+  --color-text: #262626;
+  --color-border: #e5e5e5;
+  font-family: Arial, sans-serif;
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+body {
+  margin: 0;
+}

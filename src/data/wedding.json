@@ -1,0 +1,144 @@
+{
+  "locale": "vi-VN",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "couple": {
+    "groom": {
+      "fullName": "Lương Văn Duy",
+      "shortName": "Lương Duy",
+      "givenName": "Duy",
+      "initial": "D"
+    },
+    "bride": {
+      "fullName": "Nguyễn Thị Ánh",
+      "shortName": "Nguyễn Ánh",
+      "givenName": "Ánh",
+      "initial": "A"
+    },
+    "monogram": "D & A"
+  },
+  "blessing": {
+    "text": "Nguyện xin Thiên Chúa chúc phúc cho tình yêu của chúng con hôm nay và mãi mãi",
+    "lines": [
+      "Nguyện xin Thiên Chúa chúc phúc",
+      "cho tình yêu của chúng con hôm nay và mãi mãi"
+    ]
+  },
+  "families": {
+    "groom": {
+      "label": "Nhà Trai",
+      "father": {
+        "label": "ÔNG",
+        "fullName": "Lương Văn Tuân"
+      },
+      "mother": {
+        "label": "BÀ",
+        "fullName": "Phạm Thị Ngát"
+      },
+      "address": {
+        "locality": "Thôn Hưng Nghĩa",
+        "commune": "Xã Hải Hưng",
+        "province": "Tỉnh Ninh Bình",
+        "fullText": "Thôn Hưng Nghĩa, Xã Hải Hưng, Tỉnh Ninh Bình",
+        "lines": [
+          "Thôn Hưng Nghĩa, Xã Hải Hưng",
+          "Tỉnh Ninh Bình"
+        ]
+      }
+    },
+    "bride": {
+      "label": "Nhà Gái",
+      "father": {
+        "label": "ÔNG",
+        "fullName": "Nguyễn Văn Bắc"
+      },
+      "mother": {
+        "label": "BÀ",
+        "fullName": "Nguyễn Thị Phương"
+      },
+      "address": {
+        "locality": "Xóm 23 Hải Đường",
+        "commune": "Xã Hải Anh",
+        "province": "Tỉnh Ninh Bình",
+        "fullText": "Xóm 23 Hải Đường, Xã Hải Anh, Tỉnh Ninh Bình",
+        "lines": [
+          "Xóm 23 Hải Đường, Xã Hải Anh",
+          "Tỉnh Ninh Bình"
+        ]
+      }
+    }
+  },
+  "announcement": {
+    "invitationTitle": "Trân trọng kính mời",
+    "invitationText": "Quý khách đến chung vui trong ngày thành hôn của hai con",
+    "coverTitle": "THIỆP CƯỚI",
+    "intro": "TRÂN TRỌNG BÁO TIN",
+    "title": "THÁNH LỄ HÔN PHỐI, LỄ ĂN HỎI VÀ LỄ THÀNH HÔN",
+    "relationship": "CỦA CON CHÚNG TÔI"
+  },
+  "ceremony": {
+    "title": "Thánh Lễ Hôn Phối",
+    "intro": "THÁNH LỄ HÔN PHỐI ĐƯỢC CỬ HÀNH TẠI",
+    "venue": {
+      "name": "Giáo xứ Nam Đường",
+      "displayName": "GIÁO XỨ NAM ĐƯỜNG"
+    },
+    "date": "2026-10-24",
+    "time": "09:00",
+    "startsAt": "2026-10-24T09:00:00+07:00",
+    "weekday": "Thứ Bảy",
+    "timeLine": "VÀO LÚC 9 GIỜ 00, THỨ BẢY",
+    "dateLabel": "24.10.2026",
+    "lunarDate": {
+      "day": 15,
+      "month": 9,
+      "yearName": "Bính Ngọ",
+      "label": "(Tức ngày 15 tháng 09 năm Bính Ngọ)"
+    },
+    "closing": "Rất hân hạnh được đón tiếp!"
+  },
+  "engagement": {
+    "title": "Lễ Ăn Hỏi",
+    "date": "2026-10-24",
+    "dateLabel": "24.10.2026",
+    "weekday": "Thứ Bảy",
+    "time": "10:30",
+    "timeIsApproximate": true,
+    "timeLabel": "Khoảng 10:30, ngay sau Thánh Lễ Hôn Phối",
+    "startsAt": "2026-10-24T10:30:00+07:00",
+    "afterEvent": "ceremony",
+    "venue": {
+      "name": "Tư gia nhà gái",
+      "address": "Xóm 23 Hải Đường, Xã Hải Anh, Tỉnh Ninh Bình"
+    }
+  },
+  "reception": {
+    "title": "Lễ Thành Hôn",
+    "salutation": "TRÂN TRỌNG KÍNH MỜI",
+    "guestName": null,
+    "invitationLines": [
+      "ĐẾN DỰ TIỆC CHUNG VUI",
+      "CÙNG GIA ĐÌNH CHÚNG TÔI TẠI:"
+    ],
+    "venue": {
+      "name": "Tư Gia",
+      "address": "Thôn Hưng Nghĩa, Xã Hải Hưng, Tỉnh Ninh Bình"
+    },
+    "date": "2026-10-25",
+    "time": "11:00",
+    "startsAt": "2026-10-25T11:00:00+07:00",
+    "weekday": "Chủ Nhật",
+    "timeLine": "VÀO LÚC: 11 GIỜ 00 PHÚT, CHỦ NHẬT",
+    "dateLabel": "25.10.2026",
+    "lunarDate": {
+      "day": 16,
+      "month": 9,
+      "yearName": "Bính Ngọ",
+      "label": "(Tức ngày 16 tháng 09 năm Bính Ngọ)"
+    },
+    "closing": "Sự hiện diện của Quý vị là niềm vinh hạnh cho gia đình chúng tôi!",
+    "closingLines": [
+      "Sự hiện diện của Quý vị là niềm vinh hạnh",
+      "cho gia đình chúng tôi!"
+    ]
+  }
+}

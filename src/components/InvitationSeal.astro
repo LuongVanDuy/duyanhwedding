@@ -1,0 +1,26 @@
+---
+import { Image } from 'astro:assets';
+import monogram from '../assets/monogram-da-engraved.png';
+---
+
+<Image
+  src={monogram}
+  alt=""
+  aria-hidden="true"
+  width={540}
+  format="webp"
+  quality={85}
+  loading="eager"
+  class="seal"
+/>
+
+<style>
+  .seal {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(-2px 3px 2px rgb(0 0 0 / 22%));
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+</style>

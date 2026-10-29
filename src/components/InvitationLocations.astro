@@ -1,0 +1,139 @@
+---
+import '@fontsource/great-vibes/400.css';
+import '@fontsource/cormorant-garamond/400.css';
+import wedding from '../data/wedding.json';
+import content from '../data/wedding-locations.json';
+
+const events = {
+  ceremony: { ...wedding.ceremony, address: '', venueName: wedding.ceremony.venue.name, timeLabel: wedding.ceremony.time },
+  engagement: { ...wedding.engagement, address: wedding.engagement.venue.address, venueName: wedding.engagement.venue.name, timeLabel: `${wedding.engagement.timeIsApproximate ? 'Khoảng ' : ''}${wedding.engagement.time}` },
+  reception: { ...wedding.reception, address: wedding.reception.venue.address, venueName: 'Tư gia nhà trai', timeLabel: `Tiệc chung vui ${wedding.reception.time}` },
+};
+const locations = content.locations.map((location) => {
+  const event = events[location.event as keyof typeof events];
+  if (!event) throw new Error(`Unknown location event: ${location.event}`);
+  const query = event.address || event.venueName;
+  const mapUrl: string | null = location.mapUrl;
+  return { ...location, ...event, query, mapUrl: mapUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`, hasPin: Boolean(mapUrl) };
+});
+---
+
+<section class="locations-section" aria-labelledby="locations-title">
+  <header class="locations-heading">
+    <svg class="location-mark" viewBox="0 0 70 80" fill="none" aria-hidden="true">
+      <path d="M35 69C29 60 12 44 12 29a23 23 0 1 1 46 0c0 15-17 31-23 40Z" stroke="currentColor" stroke-width="1" />
+      <path d="M35 21c-8-11-20 5 0 17 20-12 8-28 0-17Z" stroke="currentColor" stroke-width="1" />
+      <path d="M22 73c-17 6 43 6 26 0" stroke="currentColor" stroke-width=".7" />
+    </svg>
+    <p class="eyebrow">{content.eyebrow}</p>
+    <h2 id="locations-title">{content.title}</h2>
+    <p class="locations-intro">{content.intro}</p>
+  </header>
+
+  <div class="location-list">
+    {locations.map((location, index) => (
+      <article class="location-card" aria-labelledby={`location-${location.event}`}>
+        <div class="location-topline">
+          <span class="place-label">{location.label}</span>
+          <span class="place-number" aria-hidden="true">0{index + 1}</span>
+        </div>
+        <div class="venue-heading">
+          <svg viewBox="0 0 48 56" fill="none" aria-hidden="true">
+            {location.event === 'ceremony' ? (
+              <g stroke="currentColor" stroke-width="1" stroke-linejoin="round">
+                <path d="M24 3v10M19 7h10M15 50V24l9-11 9 11v26M5 50V35l10-8M43 50V35L33 27M2 50h44M20 50V38a4 4 0 0 1 8 0v12" />
+                <circle cx="24" cy="27" r="3" /><path d="M9 39v5M39 39v5" />
+              </g>
+            ) : (
+              <g stroke="currentColor" stroke-width="1" stroke-linejoin="round">
+                <path d="M4 27 24 11l20 16M9 24v26h30V24M4 50h40M20 50V35h8v15M30 15V8h6v12" />
+                <path d="M13 30h4v6h-4ZM31 30h4v6h-4ZM21 24h6v5h-6Z" />
+              </g>
+            )}
+          </svg>
+          <h3 id={`location-${location.event}`}>{location.venueName}</h3>
+        </div>
+        {location.address && <address>{location.address}</address>}
+        <div class="occasion">
+          <p>{location.title}</p>
+          <p><time datetime={location.date}>{location.dateLabel}</time><span aria-hidden="true"> · </span>{location.timeLabel}</p>
+        </div>
+        <div class="location-actions">
+          <a href={location.mapUrl} target="_blank" rel="noopener noreferrer" aria-label={`${location.hasPin ? 'Xem vị trí:' : 'Tìm trên Google Maps:'} ${location.venueName} (mở tab mới)`}>
+            <span>{location.hasPin ? 'Xem vị trí & chỉ đường' : 'Tìm trên Google Maps'}</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.3" /></svg>
+          </a>
+          <button type="button" data-copy-location={location.query} aria-label={`Sao chép ${location.address ? 'địa chỉ' : 'tên'} ${location.venueName}`} hidden>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="8" y="8" width="11" height="13" rx="1" stroke="currentColor" /><path d="M15 8V3H4v13h4" stroke="currentColor" /></svg>
+            <span>Sao chép {location.address ? 'địa chỉ' : 'tên địa điểm'}</span>
+          </button>
+        </div>
+        {!location.hasPin && location.address && <p class="map-hint">Bản đồ tìm theo địa chỉ khu vực.</p>}
+        <p class="copy-status" data-copy-status role="status" aria-live="polite"></p>
+      </article>
+    ))}
+  </div>
+  <footer class="locations-closing"><span aria-hidden="true"></span><p>Hẹn gặp trong ngày vui!</p><span aria-hidden="true"></span></footer>
+</section>
+
+<script>
+  if (navigator.clipboard?.writeText) {
+    document.querySelectorAll<HTMLButtonElement>('[data-copy-location]').forEach((button) => {
+      button.hidden = false;
+      button.addEventListener('click', async () => {
+        const status = button.closest('.location-card')?.querySelector<HTMLElement>('[data-copy-status]');
+        if (!status) return;
+        button.disabled = true;
+        try {
+          await navigator.clipboard.writeText(button.dataset.copyLocation ?? '');
+          status.textContent = 'Đã sao chép. Bạn có thể dán vào ứng dụng bản đồ.';
+        } catch {
+          status.textContent = 'Chưa sao chép được. Bạn có thể chọn và sao chép địa chỉ ở trên.';
+        } finally {
+          button.disabled = false;
+        }
+      });
+    });
+  }
+</script>
+
+<style>
+  .locations-section { --place-ink: #344b3d; --place-muted: #696c59; --place-rule: #c8c6b2; position: relative; isolation: isolate; padding: 46px 23px 37px; background: #f8f3e9; color: var(--place-ink); font-family: 'Cormorant Garamond', Georgia, serif; }
+  .locations-section::before { content: ''; position: absolute; z-index: -1; inset: 0; background: url('/images/paper-grain.svg'); opacity: .25; pointer-events: none; }
+  .locations-heading { text-align: center; }
+  .location-mark { display: block; width: 46px; height: 53px; margin: 0 auto 22px; color: #7b8266; }
+  .eyebrow { margin: 0 0 16px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; text-wrap: balance; }
+  h2 { margin: 0 auto; max-width: 300px; font: 400 clamp(41px, 12cqw, 52px)/1.25 'Great Vibes', cursive; text-wrap: balance; }
+  .locations-intro { max-width: 290px; margin: 21px auto 30px; color: var(--place-muted); font-size: 18px; line-height: 1.5; text-wrap: balance; }
+  .location-list { display: grid; gap: 22px; }
+  .location-card { position: relative; padding: 20px 23px 18px; border: 1px solid var(--place-rule); background: rgb(255 253 247 / 75%); box-shadow: 0 5px 15px rgb(52 75 61 / 4%); }
+  .location-card:first-child { border-top: 3px solid var(--place-ink); }
+  .location-topline { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding-bottom: 13px; border-bottom: 1px solid var(--place-rule); }
+  .place-label { font-size: 12px; text-transform: uppercase; letter-spacing: .18em; }
+  .place-number { color: #787c66; font-size: 24px; font-style: italic; line-height: 1; }
+  .venue-heading { display: flex; align-items: center; gap: 15px; margin: 22px 0 15px; }
+  .venue-heading svg { flex: 0 0 39px; width: 39px; height: 47px; color: #737e61; }
+  h3 { margin: 0; font-size: 27px; font-weight: 400; line-height: 1.15; text-wrap: balance; }
+  address { margin: 0 0 19px; color: var(--place-muted); font-size: 17px; line-height: 1.5; font-style: normal; text-wrap: pretty; }
+  .occasion { margin: 0 0 20px; }
+  .occasion p { margin: 4px 0; font-size: 16px; line-height: 1.5; }
+  .occasion p + p { color: var(--place-muted); font-size: 15px; }
+  .occasion time { white-space: nowrap; font-variant-numeric: lining-nums; }
+  .location-actions { display: grid; gap: 4px; }
+  .location-actions a { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; padding: 10px 15px; background: var(--place-ink); border: 1px solid var(--place-ink); color: #fff9eb; text-decoration: none; font-size: 16px; transition: background 180ms ease; }
+  .location-actions a:hover { background: #22392c; }
+  .location-actions svg { width: 20px; height: 20px; flex-shrink: 0; }
+  .location-actions button { display: flex; justify-content: center; align-items: center; gap: 8px; min-height: 44px; padding: 8px; border: 0; background: transparent; color: var(--place-ink); font: 15px/1.4 'Cormorant Garamond', Georgia, serif; cursor: pointer; }
+  .location-actions button[hidden] { display: none; }
+  .location-actions button:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .location-actions :is(a, button):focus-visible { outline: 2px solid var(--place-ink); outline-offset: 4px; }
+  .location-actions button:disabled { opacity: .6; cursor: wait; }
+  .map-hint { margin: 8px 0 0; color: var(--place-muted); font-size: 14px; text-align: center; }
+  .copy-status { margin: 10px 0 0; font-size: 15px; line-height: 1.4; text-align: center; }
+  .copy-status:empty { display: none; }
+  .locations-closing { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 28px; }
+  .locations-closing p { margin: 0; font: 400 27px/1.4 'Great Vibes', cursive; text-align: center; }
+  .locations-closing > span { width: 17px; height: 1px; background: var(--place-rule); flex-shrink: 0; }
+  @media (max-width: 350px) { .locations-section { padding-inline: 16px; } .location-card { padding-inline: 18px; } h3 { font-size: 25px; } }
+  @media (prefers-reduced-motion: reduce) { .location-actions a { transition: none; } }
+</style>

@@ -1,0 +1,167 @@
+---
+import '@fontsource/great-vibes/400.css';
+import '@fontsource/cormorant-garamond/400.css';
+import wedding from '../data/wedding.json';
+import locations from '../data/wedding-locations.json';
+
+const mapFor = (event: string) => {
+  const url = locations.locations.find((location) => location.event === event)?.mapUrl;
+  if (!url) throw new Error(`Missing map URL for ${event}`);
+  return url;
+};
+
+const days = [
+  {
+    date: wedding.ceremony.date,
+    dateLabel: wedding.ceremony.dateLabel,
+    weekday: wedding.ceremony.weekday,
+    lunarDate: wedding.ceremony.lunarDate.label,
+    events: [
+      {
+        ...wedding.ceremony,
+        mapUrl: mapFor('ceremony'),
+        number: '01',
+        venueName: wedding.ceremony.venue.name,
+        address: '',
+      },
+      {
+        ...wedding.engagement,
+        mapUrl: mapFor('engagement'),
+        number: '02',
+        venueName: wedding.engagement.venue.name,
+        address: wedding.engagement.venue.address,
+      },
+    ],
+  },
+  {
+    date: wedding.reception.date,
+    dateLabel: wedding.reception.dateLabel,
+    weekday: wedding.reception.weekday,
+    lunarDate: wedding.reception.lunarDate.label,
+    events: [
+      {
+        ...wedding.reception,
+        mapUrl: mapFor('reception'),
+        number: '03',
+        venueName: `${wedding.reception.venue.name} nhà trai`,
+        address: wedding.reception.venue.address,
+      },
+    ],
+  },
+];
+---
+
+<section class="schedule-section" aria-labelledby="schedule-title" data-motion-zone>
+  <h2 id="schedule-title" class="sr-only">Lịch hôn lễ</h2>
+
+  <div class="celebration-days">
+    {days.map((day) => (
+      <article class="celebration-day" aria-label={`${day.weekday}, ${day.dateLabel}`}>
+        <header class="day-heading" data-invitation-reveal>
+          <h3>
+            <time datetime={day.date} aria-label={day.dateLabel}>
+              <span class="day-number">{day.dateLabel.split('.')[0]}</span>
+              <span class="month-year">{day.dateLabel.split('.').slice(1).join(' / ')}</span>
+            </time>
+          </h3>
+          <div class="day-description">
+            <p class="weekday">{day.weekday}</p>
+            <p class="lunar-date">{day.lunarDate}</p>
+          </div>
+        </header>
+
+        <ol class="event-list" start={Number(day.events[0].number)}>
+          {day.events.map((event) => (
+            <li class="event" data-invitation-reveal>
+              <div class="event-content">
+                <p class="event-time">
+                  <time datetime={event.startsAt}>{event.time}</time>
+                </p>
+                <h4>{event.title}</h4>
+                <p class="venue">{event.venueName}</p>
+                {event.address && <p class="address">{event.address}</p>}
+                <a class="directions-link" href={event.mapUrl} target="_blank" rel="noopener noreferrer" aria-label={`Xem đường đi đến ${event.venueName} (mở tab mới)`}>
+                  Xem đường đi
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.3" /></svg>
+                </a>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </article>
+    ))}
+  </div>
+
+  <div class="margin-flower" aria-hidden="true" data-invitation-reveal>
+    <svg class="botanical-sprig" viewBox="0 0 110 260" fill="none">
+      <g stroke="currentColor" stroke-width=".8" stroke-linecap="round" stroke-linejoin="round">
+        <path class="botanical-stem" pathLength="1" d="M35 254C70 211 42 162 69 118C79 102 79 76 73 53M54 196C36 181 23 164 19 139M60 151C83 146 95 130 100 115" />
+        <path d="M56 203C29 202 21 180 21 180C43 181 52 190 56 203ZM56 176C73 169 82 153 79 142C62 151 54 161 56 176ZM63 130C43 122 37 109 39 97C59 102 66 112 63 130M24 155C9 151 5 137 9 128C23 135 28 145 24 155M86 135C100 134 106 123 104 113C90 115 84 124 86 135" />
+        <path d="M73 55C47 58 40 44 51 34C38 19 56 9 67 20C71 1 91 4 89 25C109 21 114 39 94 47C104 63 83 72 73 55Z" />
+        <path d="M74 49C56 45 57 31 68 34C64 20 81 19 82 35C95 32 96 47 80 50M73 55L76 42M69 52L74 44" />
+      </g>
+    </svg>
+  </div>
+
+  <footer class="schedule-closing">
+    <p data-invitation-reveal>{wedding.reception.closing}</p>
+  </footer>
+</section>
+
+<style>
+  .schedule-section {
+    --schedule-ink: #344b3d;
+    --schedule-muted: #5f6959;
+    --schedule-rule: #a9b69b;
+    position: relative;
+    isolation: isolate;
+    padding: 10px 0 0;
+    color: var(--schedule-ink);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+  }
+
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  .celebration-days { display: grid; gap: 44px; padding-inline: 30px; }
+  .celebration-day {
+    position: relative;
+    padding: 0;
+  }
+  .day-heading { display: flex; align-items: center; justify-content: center; gap: 23px; max-width: 285px; margin: 0 auto 29px; }
+  h3 { flex: 0 0 98px; margin: 0; font-weight: 400; text-align: center; }
+  .day-number { display: block; font-size: 96px; line-height: .85; letter-spacing: -.065em; padding-right: .065em; font-variant-numeric: lining-nums; }
+  .month-year { display: block; margin-top: 12px; font-size: 16px; letter-spacing: .15em; }
+  .day-description { min-width: 0; text-align: left; }
+  .weekday { margin: 0 0 7px; font-size: 25px; font-style: italic; }
+  .lunar-date { margin: 0; max-width: 160px; color: var(--schedule-muted); font-size: 17px; line-height: 1.55; text-wrap: balance; }
+
+  .event-list { margin: 0; padding: 0; list-style: none; }
+  .event { position: relative; text-align: center; }
+  .event + .event { margin-top: 20px; padding-top: 26px; }
+  .event-content { min-width: 0; }
+  .event-time { display: flex; align-items: center; justify-content: center; gap: 13px; margin: 0 0 8px; font-size: 22px; line-height: 1.4; font-variant-numeric: lining-nums; }
+  .event-time::before, .event-time::after { content: ''; width: 22px; height: 1px; background: var(--schedule-rule); opacity: .55; }
+  h4 { margin: 0; font-size: clamp(26px, 7.7cqw, 33px); font-weight: 400; line-height: 1.3; text-wrap: balance; }
+  .venue { margin: 11px 0 0; font-size: 21px; line-height: 1.4; }
+  .address { margin: 5px auto 0; color: var(--schedule-muted); font-size: 19px; line-height: 1.55; text-wrap: balance; }
+  .directions-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 4px; color: var(--schedule-ink); font-size: 18px; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+  .directions-link svg { width: 14px; height: 14px; transition: transform 250ms ease; }
+  .directions-link:hover svg { transform: translate(2px, -2px); }
+  .directions-link:hover { color: #657653; }
+  .directions-link:focus-visible { outline: 2px solid var(--schedule-ink); outline-offset: 3px; }
+
+  .margin-flower { position: absolute; z-index: -1; right: -30px; top: 190px; width: 100px; color: #718164; opacity: .35; pointer-events: none; }
+  .margin-flower svg { display: block; width: 100%; }
+  .schedule-closing { position: relative; margin-top: 18px; padding: 0 28px 64px; color: var(--schedule-ink); text-align: center; }
+  .schedule-closing p { position: relative; max-width: 330px; margin: 0 auto; font-family: 'Great Vibes', cursive; font-size: 31px; line-height: 1.55; text-wrap: balance; }
+
+  @media (max-width: 350px) {
+    .celebration-days { padding-inline: 23px; }
+    .day-heading { gap: 17px; }
+    h3 { flex-basis: 86px; }
+    .day-number { font-size: 85px; }
+    .weekday { font-size: 23px; }
+    .margin-flower { right: -43px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .directions-link svg { transition: none; } }
+</style>

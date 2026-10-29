@@ -1,0 +1,56 @@
+# Keep only application source and the configuration needed to run it.
+/*
+!/.gitignore
+!/.env.example
+!/README.md
+!/astro.config.mjs
+!/package.json
+!/package-lock.json
+!/tsconfig.json
+!/src/
+!/public/
+!/scripts/
+!/integrations/
+!/deploy/
+
+# Build utilities belong in Git; local preview/tunnel tools do not.
+/scripts/*
+!/scripts/prune-unused-originals.mjs
+!/scripts/generate-brand-assets.mjs
+
+# Keep the guestbook integration source, without local test tooling.
+/integrations/*
+!/integrations/google-sheets/
+/integrations/google-sheets/*
+!/integrations/google-sheets/Code.gs
+!/integrations/google-sheets/appsscript.json
+
+# Only edited photos are used by the current invitation.
+/src/assets/wedding/*
+!/src/assets/wedding/edited/
+/src/data/wedding-photos.json
+/public/images/wedding-share-v1.jpg
+
+# Credentials, generated output, local notes, and editor/AI state.
+node_modules/
+dist/
+.astro/
+.runtime/
+.env
+.env.*
+!.env.example
+docs/
+README.old.md
+AGENTS.md
+CLAUDE.md
+.agents/
+.codex/
+.claude/
+.cursor/
+.vscode/
+.idea/
+*.log
+*.pem
+*.key
+.DS_Store
+Thumbs.db

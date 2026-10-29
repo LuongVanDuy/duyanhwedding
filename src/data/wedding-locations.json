@@ -1,0 +1,10 @@
+{
+  "eyebrow": "Ba điểm hẹn · Hai ngày chung vui",
+  "title": "Hẹn gặp bạn tại đây",
+  "intro": "Chọn địa điểm để mở bản đồ và tìm đường đến chung vui cùng chúng mình.",
+  "locations": [
+    { "event": "ceremony", "label": "Thánh đường", "mapUrl": "https://share.google/AdmeikxmlvLOAneEU" },
+    { "event": "engagement", "label": "Nhà gái", "mapUrl": "https://maps.app.goo.gl/e4fvWXhyeCkug7wz8" },
+    { "event": "reception", "label": "Nhà trai", "mapUrl": "https://maps.app.goo.gl/Bzvr9pjNgYM9YBPKA" }
+  ]
+}

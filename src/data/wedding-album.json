@@ -1,0 +1,63 @@
+{
+  "title": "Những ngày có nhau",
+  "titleLines": [
+    "Những ngày",
+    "có nhau"
+  ],
+  "chapters": {
+    "garden": {
+      "label": "Một ngày nên thơ",
+      "caption": "Giữa muôn ngàn hoa, mình tìm thấy nhau."
+    },
+    "together": {
+      "label": "Bình yên là",
+      "title": "có người bên cạnh",
+      "note": "Một ánh nhìn.\nMột nụ cười.\nMột đời có nhau.",
+      "caption": "Chỉ cần là chúng mình"
+    },
+    "celebration": {
+      "label": "Từ nay về sau",
+      "title": "Chung một nhà",
+      "caption": "Mình cùng viết tiếp những ngày thật đẹp."
+    }
+  },
+  "closing": "Cùng nhau, hôm nay và mãi về sau",
+  "photos": [
+    {
+      "id": "630",
+      "alt": "Duy mỉm cười, chỉnh tay áo vest trắng giữa khu vườn"
+    },
+    {
+      "id": "352",
+      "alt": "Ánh mỉm cười trong váy cưới và khăn voan, cầm bó hoa trắng"
+    },
+    {
+      "id": "542",
+      "alt": "Duy và Ánh cùng đọc lời hẹn ước giữa khu vườn xanh"
+    },
+    {
+      "id": "776",
+      "alt": "Duy nghiêng đầu bên Ánh, hai bạn đứng trên phông xanh lá"
+    },
+    {
+      "id": "785",
+      "alt": "Duy ghé sát Ánh, cô dâu cầm bó hoa trắng trên phông xanh lá"
+    },
+    {
+      "id": "798",
+      "alt": "Duy và Ánh cười tươi, cô dâu giơ bó hoa trên phông xanh lá"
+    },
+    {
+      "id": "941",
+      "alt": "Ánh nâng cằm Duy, hai người tạo dáng vui trước phông chữ hỷ đỏ"
+    },
+    {
+      "id": "935",
+      "alt": "Duy và Ánh tựa trán bên nhau, cô dâu cầm bó hoa đỏ"
+    },
+    {
+      "id": "929",
+      "alt": "Duy và Ánh đứng bên nhau trước phông chữ hỷ đỏ, cô dâu cầm bó hoa đỏ"
+    }
+  ]
+}

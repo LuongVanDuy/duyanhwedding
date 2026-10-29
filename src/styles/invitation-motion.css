@@ -1,0 +1,116 @@
+:root {
+  --motion-ease: cubic-bezier(.22, 1, .36, 1);
+  --motion-soft: cubic-bezier(.4, 0, .2, 1);
+}
+
+/* Individual transforms preserve the deliberately tilted paper compositions. */
+[data-motion] {
+  transition: opacity 1000ms var(--motion-ease), translate 1200ms var(--motion-ease), scale 1200ms var(--motion-ease);
+  transition-delay: var(--motion-delay, 0ms);
+}
+[data-motion='pending'] {
+  opacity: 0;
+  translate: var(--enter-x, 0px) var(--enter-y, 22px);
+  scale: var(--enter-scale, 1);
+}
+[data-motion='pending']:focus-within { opacity: 1; translate: none; scale: 1; }
+.wedding-hero [data-motion] {
+  transition-delay: calc(min(var(--reveal-delay, 0ms), 420ms) + var(--opening-offset, 0ms));
+}
+.wedding-hero .groom { --enter-x: -12px; --enter-y: 12px; }
+.wedding-hero .bride { --enter-x: 12px; --enter-y: 12px; }
+.wedding-hero .photo-print { --enter-y: 28px; --enter-scale: .985; }
+.family:first-child { --enter-x: -12px; --enter-y: 10px; }
+.family:last-child { --enter-x: 12px; --enter-y: 10px; }
+.day-heading { --enter-y: 18px; }
+.event { --enter-y: 16px; }
+.last-photo { --enter-y: 28px; --enter-scale: .975; }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* One gentle arrival, followed by very small ambient movement on ornaments. */
+  .motion-started [data-motion='visible'] .floral-rule span {
+    animation: rule-unfold 1200ms var(--motion-ease) 250ms both;
+  }
+  .motion-started [data-motion='visible'] .ink-line {
+    stroke-dasharray: 1;
+    animation: ink-appear 1800ms var(--motion-ease) 200ms both;
+  }
+  .motion-started .day-heading[data-motion='visible'] .day-number {
+    animation: date-arrive 1400ms var(--motion-ease) both;
+  }
+  .motion-started [data-motion='visible'] .botanical-sprig {
+    transform-origin: 50% 100%;
+    animation: ornament-sway 7s ease-in-out infinite;
+    animation-play-state: paused;
+  }
+  .motion-started [data-motion='visible'] .green-print,
+  .motion-started [data-motion='visible'] .portrait-print,
+  .motion-started [data-motion='visible'] .playful-print {
+    animation: paper-arrive 1500ms var(--motion-ease) 220ms both;
+  }
+  .motion-started [data-motion='visible'] .love-stamp {
+    animation: stamp-arrive 1300ms var(--motion-ease) 320ms both;
+  }
+  .motion-started [data-motion='visible'] .handwritten-heart .ink-line {
+    animation-delay: 500ms;
+    animation-duration: 2300ms;
+  }
+  .motion-started [data-motion='visible'] .olive-sprig > g {
+    transform-origin: 21px 181px;
+    animation: ornament-sway 8s ease-in-out infinite;
+    animation-play-state: paused;
+  }
+  .motion-started [data-motion-active='true'] [data-motion='visible'] .botanical-sprig,
+  .motion-started [data-motion-active='true'] [data-motion='visible'] .olive-sprig > g {
+    animation-play-state: running;
+  }
+  .motion-started .album-photo { overflow: hidden; }
+  .motion-started [data-album-reveal] .album-photo img {
+    scale: 1;
+    transition: scale 2200ms var(--motion-ease) 100ms;
+  }
+  .motion-started [data-album-reveal][data-motion='pending'] .album-photo img { scale: 1.045; }
+  .photo-viewer[open] { animation: viewer-arrive 280ms var(--motion-ease); }
+  .photo-viewer[open]::backdrop { animation: backdrop-arrive 280ms ease; }
+  .viewer-stage img:not([hidden]) { animation: viewer-arrive 350ms var(--motion-ease); }
+  .motion-started .wish-board[data-motion='visible'].is-in-view .wish-paper {
+    animation: note-settle 1800ms var(--motion-ease) both;
+    animation-play-state: running;
+  }
+  .motion-started .wish-board[data-motion='visible']:is(.is-held, .is-modal-open) .wish-paper,
+  .motion-started .wish-board:has(.wish-window:focus-visible) .wish-paper { animation-play-state: paused; }
+  .motion-started .thanks-letter .couple-signature[data-motion='visible'] {
+    animation: signature-arrive 1400ms var(--motion-ease) both;
+  }
+  .write-wish, .primary-button, .music-toggle, .photo-viewer button {
+    transition: background-color 220ms ease, scale 220ms var(--motion-ease), box-shadow 220ms ease;
+  }
+  .write-wish[data-motion] {
+    transition: opacity 1000ms var(--motion-ease), translate 1200ms var(--motion-ease), background-color 220ms ease, scale 220ms var(--motion-ease), box-shadow 220ms ease;
+  }
+  .write-wish span, .invitation-end a span { display: inline-block; transition: translate 250ms var(--motion-ease); }
+  .write-wish:active, .primary-button:active, .music-toggle:active, .photo-viewer button:active { scale: .96; }
+  @media (hover: hover) {
+    .write-wish:hover { box-shadow: 0 6px 22px #0e221738; }
+    .write-wish:hover span { translate: 2px -2px; }
+    .invitation-end a:hover span { translate: 0 -3px; }
+    .motion-started .wish-board:has(.wish-paper:hover) .wish-paper { animation-play-state: paused; }
+  }
+  .motion-suspended *, .motion-suspended *::before, .motion-suspended *::after { animation-play-state: paused !important; }
+}
+
+@keyframes rule-unfold { from { scale: 0 1; } to { scale: 1; } }
+@keyframes ink-appear { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes date-arrive { from { opacity: 0; translate: 0 12px; scale: .96; } to { opacity: 1; translate: 0; scale: 1; } }
+@keyframes paper-arrive { from { opacity: 0; translate: 0 28px; rotate: -4deg; } to { opacity: 1; translate: 0; rotate: 0deg; } }
+@keyframes stamp-arrive { from { opacity: 0; scale: 1.13; } to { opacity: 1; scale: 1; } }
+@keyframes ornament-sway { 0%, 100% { rotate: -1.5deg; } 50% { rotate: 1.5deg; } }
+@keyframes note-settle { 0% { transform: rotate(-2deg); } 55% { transform: rotate(1deg); } 100% { transform: rotate(0); } }
+@keyframes signature-arrive { from { opacity: 0; translate: 0 12px; } to { opacity: 1; translate: 0; } }
+@keyframes viewer-arrive { from { opacity: 0; scale: .98; translate: 0 8px; } to { opacity: 1; scale: 1; translate: 0; } }
+@keyframes backdrop-arrive { from { opacity: 0; } to { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-motion] { opacity: 1; translate: none; scale: none; transition: none; }
+  .wedding-hero .ampersand[data-motion] { opacity: .3; }
+}

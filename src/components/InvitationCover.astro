@@ -1,0 +1,341 @@
+---
+import InvitationSeal from './InvitationSeal.astro';
+import '@fontsource/great-vibes/400.css';
+import '@fontsource/cormorant-garamond/400.css';
+import wedding from '../data/wedding.json';
+---
+
+<div class="invitation-cover" data-cover data-state="closed">
+  <div class="door door--left" aria-hidden="true">
+    <div class="seal-holder"><InvitationSeal /></div>
+  </div>
+  <div class="door door--right" aria-hidden="true"></div>
+  <div class="cover-invitation" id="cover-invitation">
+    <p class="cover-salutation">{wedding.reception.salutation}</p>
+    <p class="cover-guest" data-cover-guest>{wedding.reception.guestName || 'Quý khách'}</p>
+  </div>
+  <button class="open-button" type="button" aria-label="Mở thiệp cưới" aria-describedby="cover-invitation" data-open>
+    <span class="open-hint">Chạm để mở</span>
+  </button>
+</div>
+
+<script is:inline>
+  // Resolve the recipient before the cover paints; names are always plain text.
+  {
+    const guest = document.querySelector('[data-cover-guest]');
+    const name = new URLSearchParams(window.location.search).get('to')
+      ?.replace(/[\u0000-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/g, ' ')
+      .replace(/\s+/g, ' ').trim();
+    if (guest && name) guest.textContent = Array.from(name).slice(0, 80).join('');
+    if (guest) guest.dataset.length = Array.from(guest.textContent || '').length > 40 ? 'long' : 'short';
+  }
+</script>
+
+<audio data-wedding-music src="/audio/em-dong-y-i-do.mp3" preload="auto" loop></audio>
+<button class="music-toggle" data-music-toggle type="button" aria-label="Bật nhạc" aria-pressed="false" hidden>
+  <span class="music-hint" data-music-hint hidden>Chạm để bật nhạc</span>
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M9 18V6l11-2v12M9 9l11-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    <ellipse cx="6" cy="18" rx="3" ry="2.5" fill="currentColor" />
+    <ellipse cx="17" cy="16" rx="3" ry="2.5" fill="currentColor" />
+    <path class="music-slash" d="m3 3 18 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+  </svg>
+</button>
+
+<script>
+  import { prepareInvitationAutoscroll } from '../scripts/invitation-autoscroll';
+  const cover = document.querySelector<HTMLElement>('[data-cover]');
+  const openButton = cover?.querySelector<HTMLButtonElement>('[data-open]');
+  const inside = document.querySelector<HTMLElement>('[data-invitation-inside]');
+  const audio = document.querySelector<HTMLAudioElement>('[data-wedding-music]');
+  const musicButton = document.querySelector<HTMLButtonElement>('[data-music-toggle]');
+  const musicHint = document.querySelector<HTMLElement>('[data-music-hint]');
+
+  if (cover && openButton && inside && audio && musicButton && musicHint) {
+    let completionTimer: ReturnType<typeof setTimeout>;
+    let musicWanted = true;
+    let starting = false;
+    let fadeFrame = 0;
+    let scheduleAutoscroll: (() => void) | undefined;
+
+    const updateMusic = () => {
+      const playing = !audio.paused;
+      musicButton.setAttribute('aria-pressed', String(playing));
+      musicButton.setAttribute('aria-label', playing ? 'Tắt nhạc' : 'Bật nhạc');
+      musicButton.title = playing ? 'Tắt nhạc' : 'Bật nhạc';
+      musicHint.hidden = playing || !musicWanted || starting || musicButton.hidden;
+    };
+    const playMusic = async () => {
+      if (!musicWanted || starting || !audio.paused) return;
+      starting = true;
+      updateMusic();
+      // Request audible playback: starting at zero can be allowed as muted autoplay,
+      // then paused by the browser as soon as the fade increases the volume.
+      audio.volume = .02;
+      try {
+        if (audio.error) audio.load();
+        await audio.play();
+        if (!musicWanted) { audio.pause(); return; }
+        const start = performance.now();
+        const fade = (now: number) => {
+          audio.volume = .02 + Math.min((now - start) / 2000, 1) * .38;
+          if (now - start < 2000 && !audio.paused) fadeFrame = requestAnimationFrame(fade);
+        };
+        cancelAnimationFrame(fadeFrame);
+        fadeFrame = requestAnimationFrame(fade);
+      } catch (error) {
+        musicHint.textContent = error instanceof DOMException && error.name === 'NotAllowedError'
+          ? 'Chạm để bật nhạc' : 'Chạm để thử lại nhạc';
+      } finally { starting = false; updateMusic(); }
+    };
+    audio.addEventListener('play', updateMusic);
+    audio.addEventListener('pause', updateMusic);
+    audio.addEventListener('error', () => {
+      musicHint.textContent = 'Chạm để thử lại nhạc';
+      updateMusic();
+    });
+    musicButton.addEventListener('click', () => {
+      if (starting || !audio.paused) {
+        musicWanted = false;
+        cancelAnimationFrame(fadeFrame);
+        audio.pause();
+        updateMusic();
+      } else {
+        musicWanted = true;
+        void playMusic();
+      }
+    });
+    const retryMusic = (event: Event) => {
+      if ((event.target as Element)?.closest('[data-music-toggle]')) return;
+      if (cover.dataset.state !== 'closed') void playMusic();
+    };
+    document.addEventListener('pointerdown', retryMusic);
+    document.addEventListener('click', retryMusic);
+    document.addEventListener('keydown', retryMusic);
+
+    const finish = () => {
+      if (cover.dataset.state === 'opened') return;
+      clearTimeout(completionTimer);
+      cover.dataset.state = 'opened';
+      cover.hidden = true;
+      inside.inert = false;
+      inside.focus({ preventScroll: true });
+      scheduleAutoscroll?.();
+    };
+
+    const openInvitation = () => {
+      if (cover.dataset.state !== 'closed') return;
+      scheduleAutoscroll = prepareInvitationAutoscroll();
+      musicButton.hidden = false;
+      void playMusic();
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        finish();
+        return;
+      }
+
+      cover.dataset.state = 'opening';
+      openButton.disabled = true;
+      completionTimer = setTimeout(finish, 2900);
+    };
+
+    openButton.addEventListener('click', openInvitation);
+    cover.querySelector('.door--right')?.addEventListener('transitionend', (event) => {
+      if ((event as TransitionEvent).propertyName === 'transform' && cover.dataset.state === 'opening') {
+        finish();
+      }
+    });
+  }
+</script>
+
+<style>
+  .invitation-cover {
+    position: absolute;
+    z-index: 10;
+    inset: 0;
+    perspective: 1400px;
+    isolation: isolate;
+  }
+
+  .door {
+    position: absolute;
+    inset-block: 0;
+    width: 50%;
+    background-color: #294332;
+    background-image:
+      url('/images/paper-grain.svg'),
+      radial-gradient(ellipse at 45% 22%, rgb(157 173 131 / 11%), transparent 70%),
+      linear-gradient(95deg, #253d2e, #324c3b 82%, #263f30);
+    background-size: 160px 160px, 100% 100%, 100% 100%;
+    backface-visibility: hidden;
+    transition: transform 2400ms cubic-bezier(.42, 0, .2, 1) 160ms;
+  }
+
+  .door--left {
+    left: 0;
+    z-index: 2;
+    transform-origin: left center;
+    border-right: 1px solid #101b13;
+    box-shadow: 2px 0 3px rgb(0 0 0 / 35%);
+  }
+
+  .door--right {
+    right: 0;
+    z-index: 1;
+    transform-origin: right center;
+    border-left: 1px solid #101b13;
+    background-image:
+      url('/images/paper-grain.svg'),
+      radial-gradient(ellipse at 85% 25%, rgb(197 202 166 / 12%), transparent 80%),
+      linear-gradient(95deg, #3d5340, #415743 70%, #344d3b);
+    background-position: 60px 35px, 0 0, 0 0;
+  }
+
+  .seal-holder {
+    position: absolute;
+    top: 44%;
+    left: 100%;
+    width: 52cqw;
+    max-width: 200px;
+    transform: translate(-50%, -50%);
+  }
+
+  .cover-invitation {
+    position: absolute;
+    z-index: 4;
+    inset-inline: 24px;
+    top: calc(44% + min(26cqw, 100px) + 18px);
+    bottom: 18%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    color: #fff3d9;
+    text-align: center;
+    pointer-events: none;
+    text-shadow: 0 2px 8px rgb(0 0 0 / 20%);
+    transition: opacity 280ms ease, transform 400ms ease;
+  }
+  .cover-salutation { margin: 0; font: 400 14px/1.6 'Cormorant Garamond', Georgia, serif; letter-spacing: .15em; }
+  .cover-guest { margin: 0; font: 400 clamp(32px, 9.5cqw, 41px)/1.35 'Great Vibes', cursive; text-wrap: balance; overflow-wrap: anywhere; }
+  .cover-guest[data-length='long'] { font-size: clamp(26px, 7.5cqw, 32px); }
+
+  @media (max-height: 600px) {
+    .seal-holder { top: 35%; max-width: 140px; }
+    .cover-invitation { top: calc(35% + 86px); bottom: 20%; gap: 6px; }
+    .cover-guest { font-size: 30px; }
+    .cover-guest[data-length='long'] { font-size: 25px; }
+  }
+  @media (max-height: 440px) {
+    .seal-holder { top: 26%; max-width: 100px; }
+    .cover-invitation { top: calc(26% + 62px); }
+    .open-hint::before { display: none; }
+  }
+
+  .open-button {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .open-hint {
+    position: absolute;
+    bottom: 7%;
+    inset-inline: 16px;
+    color: #fff7df;
+    font: 700 14px/1.6 Georgia, serif;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    text-shadow: 0 2px 8px rgb(0 0 0 / 45%);
+    transition: opacity 220ms ease;
+    animation: hint-breathe 2600ms ease-in-out infinite;
+  }
+
+  .open-hint::before {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    left: calc(50% - 12px);
+    top: -38px;
+    border: 1px solid rgb(255 247 223 / 65%);
+    border-radius: 999px;
+    animation: hint-ripple 2600ms ease-out infinite;
+  }
+
+  @keyframes hint-breathe { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+  @keyframes hint-ripple { 0% { transform: scale(.65); opacity: .9; } 100% { transform: scale(1.6); opacity: 0; } }
+
+  .music-toggle {
+    position: fixed;
+    z-index: 30;
+    right: max(12px, calc((100vw - 430px) / 2 + 12px));
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 11px;
+    color: #f8f1df;
+    background: rgb(36 60 48 / 92%);
+    border: 1px solid rgb(248 241 223 / 48%);
+    border-radius: 50%;
+    box-shadow: 0 3px 14px rgb(0 0 0 / 16%);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .music-toggle[hidden] { display: none; }
+  .music-toggle svg { width: 100%; height: 100%; }
+  .music-hint {
+    position: absolute;
+    right: calc(100% + 9px);
+    padding: 8px 12px;
+    border: 1px solid rgb(248 241 223 / 30%);
+    border-radius: 18px;
+    background: #243c30;
+    color: #f8f1df;
+    font: 13px/1.4 Georgia, serif;
+    white-space: nowrap;
+    box-shadow: 0 3px 14px rgb(0 0 0 / 12%);
+  }
+  .music-hint[hidden] { display: none; }
+  .music-toggle[aria-pressed='true'] .music-slash { display: none; }
+  .music-toggle[aria-pressed='true'] svg { animation: music-sway 3s ease-in-out infinite; }
+  @keyframes music-sway { 0%, 100% { transform: rotate(-9deg); } 50% { transform: rotate(9deg); } }
+
+  button:focus-visible {
+    outline: 2px solid #eee6df;
+    outline-offset: -5px;
+  }
+
+  [data-state='opening'] .door--left {
+    transform: rotateY(-108deg);
+  }
+
+  [data-state='opening'] .door--right {
+    transform: rotateY(108deg);
+  }
+
+  [data-state='opening'] .open-button {
+    pointer-events: none;
+  }
+
+  [data-state='opening'] .open-hint {
+    opacity: 0;
+  }
+  [data-state='opening'] .cover-invitation { opacity: 0; transform: translateY(-8px); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .door,
+    .cover-invitation,
+    .open-hint {
+      transition: none;
+    }
+    .open-hint, .open-hint::before, .music-toggle[aria-pressed='true'] svg { animation: none; }
+  }
+</style>

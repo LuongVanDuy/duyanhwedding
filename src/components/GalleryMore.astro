@@ -1,0 +1,28 @@
+---
+import { galleryGroups } from '../lib/wedding-gallery';
+interface Props { group: string; }
+const group = galleryGroups.find(group => group.id === Astro.props.group)!;
+---
+<div class="gallery-invitation" data-reveal>
+  <button type="button" data-gallery-open={group.id} data-gallery-start={group.start}
+    aria-haspopup="dialog" aria-controls="wedding-photo-viewer"
+    aria-label={`Xem trọn bộ ${group.ids.length} ảnh ${group.title}`}>
+    <svg viewBox="0 0 68 22" fill="none" aria-hidden="true"><path d="M2 12c20 1 37 0 62-8M27 12c-6-8-3-10-3-10 8 1 11 7 3 10Zm12-3c7 7 14 7 14 7-3-7-8-9-14-7Z" stroke="currentColor" stroke-width=".8"/></svg>
+    <span class="gallery-label">Xem trọn bộ ảnh <span class="gallery-arrow" aria-hidden="true">↗</span></span>
+    <span class="gallery-count">{group.ids.length} khoảnh khắc</span>
+  </button>
+</div>
+<style>
+  .gallery-invitation { margin: 25px 24px 7px; text-align: center; }
+  button { display: inline-flex; flex-direction: column; align-items: center; gap: 6px; min-height: 48px; max-width: 100%; padding: 12px 18px; border: 0; color: inherit; background: transparent; font-family: 'Cormorant Garamond', Georgia, serif; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  svg { width: 62px; height: 22px; opacity: .7; }
+  .gallery-label { padding-bottom: 5px; border-bottom: 1px solid currentColor; font-size: 21px; line-height: 1.4; }
+  .gallery-arrow { display: inline-block; margin-left: 9px; font: 18px Georgia, serif; }
+  .gallery-count { font-size: 15px; line-height: 1.5; letter-spacing: .08em; opacity: .8; }
+  button:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; border-radius: 3px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .gallery-arrow, svg { transition: transform 300ms ease; }
+    button:hover .gallery-arrow { transform: translate(2px, -2px); }
+    button:hover svg { transform: rotate(-5deg); }
+  }
+</style>

@@ -1,0 +1,181 @@
+---
+import { Image } from 'astro:assets';
+import '@fontsource/great-vibes/400.css';
+import '@fontsource/cormorant-garamond/400.css';
+import wedding from '../data/wedding.json';
+import portrait from '../assets/wedding/edited/DSC01665.jpg';
+import InvitationSeal from './InvitationSeal.astro';
+
+const events = [
+  { ...wedding.ceremony, labels: [wedding.ceremony.title] },
+  { ...wedding.reception, labels: [wedding.reception.title] },
+];
+---
+
+<section data-motion-zone class="wedding-hero" aria-labelledby="couple-names">
+  <svg class="floating-petal petal-heading" viewBox="0 0 28 40" fill="none" aria-hidden="true" data-hero-reveal style="--reveal-delay: 600ms">
+    <g class="petal-drift"><path d="M7 33C-1 20 8 6 23 3c3 16-1 28-16 30Z" fill="#ead9d3" fill-opacity=".65" stroke="#bda49a" stroke-width=".8" /><path d="M7 33 20 8" stroke="#bda49a" stroke-width=".6" /></g>
+  </svg>
+  <header class="hero-heading">
+    <p class="hero-title" data-hero-reveal style="--reveal-delay: 0ms">{wedding.announcement.coverTitle}</p>
+    <h1 id="couple-names" class="couple-names">
+      <span class="groom" data-hero-reveal style="--reveal-delay: 140ms">{wedding.couple.groom.shortName}</span>
+      <span class="ampersand" data-hero-reveal style="--reveal-delay: 260ms">&amp;</span>
+      <span class="bride" data-hero-reveal style="--reveal-delay: 340ms">{wedding.couple.bride.shortName}</span>
+    </h1>
+  </header>
+
+  <div class="photo-composition">
+    <div class="album-outline" aria-hidden="true" data-hero-reveal style="--reveal-delay: 140ms"></div>
+    <figure class="photo-print" data-hero-reveal style="--reveal-delay: 360ms">
+      <div class="portrait-window">
+      <Image
+        src={portrait}
+        alt="Duy và Ánh mỉm cười, nắm tay nhau; Duy mặc vest đen, Ánh mặc váy cưới và cầm bó hoa trắng"
+        widths={[320, 480, 640, 800, 1024, 1280]}
+        sizes="(max-width: 430px) calc(100vw - 88px), 342px"
+        width={800}
+        format="webp"
+        quality={88}
+        loading="eager"
+        fetchpriority="high"
+        class="portrait-image"
+      />
+      </div>
+      <figcaption>Ngày mình chung đôi</figcaption>
+    </figure>
+
+    <svg class="silk-bow" viewBox="0 0 120 125" fill="none" aria-hidden="true" data-hero-reveal style="--reveal-delay: 700ms">
+      <g stroke="#64765a" stroke-linecap="round" stroke-linejoin="round">
+        <path pathLength="1" d="M59 43C41 35 18 13 16 23C12 36 37 46 59 43C72 24 100 4 104 18C108 34 78 47 59 43Z" stroke-width="2.2"/>
+        <path pathLength="1" d="M59 43C47 38 24 21 22 25C21 32 38 40 58 43M64 40C78 24 98 13 99 20C99 28 81 36 64 40" stroke-width=".8"/>
+        <path pathLength="1" d="M59 46C49 59 29 67 33 82C35 94 49 96 42 112M63 46C65 60 84 68 80 84C78 94 73 101 80 113" stroke-width="2"/>
+        <path pathLength="1" d="M57 47C50 64 36 68 39 81M67 47C69 59 86 68 85 80" stroke-width=".7"/>
+        <path d="M56 40C57 37 64 37 66 41L65 48C62 50 56 47 56 44Z" fill="#dce0cc" stroke-width="1.4"/>
+      </g>
+    </svg>
+
+    <div class="photo-seal" aria-hidden="true" data-hero-reveal style="--reveal-delay: 760ms"><InvitationSeal /></div>
+    <span class="photo-note" aria-hidden="true" data-hero-reveal style="--reveal-delay: 480ms">Duy &amp; Ánh · 2026</span>
+    <svg class="flower-spray" viewBox="0 0 90 170" fill="none" aria-hidden="true" data-hero-reveal style="--reveal-delay: 850ms">
+      <g class="flower-sway" stroke-linecap="round" stroke-linejoin="round">
+        <g class="flower-stems" stroke="#849078" stroke-width=".9">
+          <path pathLength="1" d="M24 164C40 127 29 97 41 55M27 145c28-27 27-43 32-62M32 117C14 101 17 82 16 76" />
+          <path pathLength="1" d="M31 133c-19-1-23-13-23-21 14 2 24 9 23 21Zm3-23c16-3 23-13 21-21-13 4-21 11-21 21Zm-3-17C18 90 15 78 18 70c11 7 14 13 13 23Zm5-13c13-3 16-12 14-20-10 4-14 11-14 20Z" fill="#e5e8dc" />
+        </g>
+        <g class="flower-bloom" stroke="#b29488" stroke-width=".8" fill="#f4e7df">
+          <path d="M41 54c-17 6-26-9-13-14-12-12 1-24 12-13 8-16 25-7 19 6 16 1 18 19 2 21 1 15-17 18-20 0Z" />
+          <path d="M41 45c-8 0-10-7-5-11m8 9c0-8 6-10 10-7m-9 11c8-1 12 4 9 9" fill="none" />
+          <circle cx="42" cy="46" r="3" fill="#cab288" stroke="none" />
+        </g>
+        <g stroke="#a48c80" stroke-width=".8" fill="#f1e3da">
+          <path d="M60 82c-10-2-13-11-6-14-1-10 10-12 13-3 9 0 10 11 1 14l-8 3Z" />
+          <path d="m60 82 3-10" />
+        </g>
+      </g>
+    </svg>
+    <svg class="floating-petal petal-photo" viewBox="0 0 28 40" fill="none" aria-hidden="true" data-hero-reveal style="--reveal-delay: 1100ms">
+      <g class="petal-drift"><path d="M7 33C-1 20 8 6 23 3c3 16-1 28-16 30Z" fill="#e1e6d8" fill-opacity=".8" stroke="#9da58d" stroke-width=".8" /><path d="M7 33 20 8" stroke="#9da58d" stroke-width=".6" /></g>
+    </svg>
+  </div>
+
+  <footer class="hero-details">
+    <div class="wedding-dates" aria-label="Ngày Thánh Lễ Hôn Phối và Lễ Thành Hôn">
+      {events.map((event, index) => (
+        <div class="wedding-date" data-hero-reveal style={`--reveal-delay: ${index * 170}ms`}>
+          <p class="event-label">{event.labels.map((label) => <span>{label}</span>)}</p>
+          <time datetime={event.date}>{event.dateLabel}</time>
+          <p class="weekday">{event.weekday}</p>
+        </div>
+      ))}
+    </div>
+    <p class="hero-location" data-hero-reveal style="--reveal-delay: 320ms"><span aria-hidden="true"></span>Ninh Bình<span aria-hidden="true"></span></p>
+  </footer>
+</section>
+
+
+<style>
+  .wedding-hero {
+    --hero-ink: #344b39;
+    --hero-muted: #756e60;
+    --hero-rule: #d8ccba;
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100svh;
+    min-height: 100dvh;
+    padding: 32px 0 26px;
+    color: var(--hero-ink);
+    background: #faf7f0;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    text-align: center;
+  }
+  .wedding-hero::before { content: ''; position: absolute; z-index: -1; inset: 0; background: url('/images/paper-grain.svg'); opacity: .25; pointer-events: none; }
+  .hero-heading { position: relative; padding-inline: 30px; }
+  .hero-title { margin: 0 0 17px; font-size: 13px; letter-spacing: .3em; }
+  .couple-names { position: relative; isolation: isolate; margin: 0 auto; max-width: 345px; padding-bottom: 6px; font-family: 'Great Vibes', cursive; font-size: clamp(41px, 12.7cqw, 55px); font-weight: 400; line-height: 1.14; }
+  .groom, .bride { position: relative; display: block; white-space: nowrap; }
+  .groom { padding-right: 63px; }
+  .bride { margin-top: 4px; padding-left: 51px; }
+  .ampersand { position: absolute; z-index: -1; top: 17px; left: 43%; color: #b6a585; opacity: .3; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 92px; line-height: 1; font-style: italic; }
+  .photo-composition { position: relative; width: 100%; margin: 23px auto 22px; padding-inline: 36px; }
+  .photo-print { position: relative; margin: 0; padding: 8px 8px 0; background: #fffefa; box-shadow: 0 7px 18px rgb(58 49 34 / 9%), 0 1px 3px rgb(58 49 34 / 7%); border: 1px solid #e6dfcf; }
+  .portrait-window { overflow: hidden; aspect-ratio: 2 / 3; background: #eeeee8; }
+  .portrait-image { display: block; width: 100%; height: auto; aspect-ratio: 2 / 3; object-fit: cover; object-position: 50% 50%; }
+  figcaption { padding: 12px 10px 10px; color: #65705c; font-family: 'Great Vibes', cursive; font-size: 24px; line-height: 1.25; }
+  .album-outline { position: absolute; inset: -7px 29px 7px; border: 1px solid #c4cbb6; }
+  .silk-bow { position: absolute; top: -41px; right: 3px; width: 91px; height: 95px; transform: rotate(12deg); filter: drop-shadow(0 1px 0 #fffefa); pointer-events: none; }
+  .photo-seal { position: absolute; bottom: 14px; right: 11px; width: 70px; transform: rotate(11deg); pointer-events: none; }
+  .photo-note { position: absolute; left: 8px; top: 52%; writing-mode: vertical-rl; transform: rotate(180deg); font-size: 12px; color: #767664; letter-spacing: .12em; }
+  .flower-spray { position: absolute; left: 5px; bottom: -5px; width: 67px; height: 127px; overflow: visible; pointer-events: none; }
+  .floating-petal { position: absolute; width: 17px; height: 25px; overflow: visible; pointer-events: none; }
+  .petal-heading { left: 18px; top: 81px; transform: rotate(-24deg); }
+  .petal-photo { right: 9px; top: 40%; width: 13px; height: 20px; transform: rotate(24deg); }
+  .hero-details { --opening-offset: 0ms; padding-inline: 28px; }
+  .wedding-dates { display: grid; grid-template-columns: 1fr 1fr; max-width: 320px; margin-inline: auto; }
+  .wedding-date + .wedding-date { border-left: 1px solid var(--hero-rule); }
+  .event-label { display: flex; flex-direction: column; justify-content: center; min-height: 48px; margin: 0 4px 0px; font-size: 17px; line-height: 1.5; text-wrap: balance; }
+  time { display: block; font-size: clamp(22px, 6.4cqw, 28px); line-height: 1.15; font-variant-numeric: lining-nums; }
+  .weekday { margin: 4px 0 0; color: var(--hero-muted); font-size: 16px; }
+  .hero-location { display: flex; align-items: center; justify-content: center; gap: 13px; margin: 23px 0 0; color: var(--hero-muted); font-size: 14px; letter-spacing: .16em; text-transform: uppercase; }
+  .hero-location span { width: 24px; height: 1px; background: var(--hero-rule); }
+  /* Only transform and opacity move; the upright photo keeps its reserved size. */
+  .hero-motion .portrait-image { transform: scale(1.045); transition: transform 2600ms cubic-bezier(.22, 1, .36, 1) calc(360ms + var(--opening-offset, 0ms)); }
+  .hero-motion .photo-print.is-visible .portrait-image { transform: scale(1); }
+  .hero-motion .silk-bow path[pathLength] { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1900ms cubic-bezier(.22, 1, .36, 1) calc(700ms + var(--opening-offset, 0ms)); }
+  .hero-motion .silk-bow.is-visible path[pathLength] { stroke-dashoffset: 0; }
+  .hero-motion .flower-stems path { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1800ms ease calc(850ms + var(--opening-offset, 0ms)); }
+  .hero-motion .flower-spray.is-visible .flower-stems path { stroke-dashoffset: 0; }
+  .hero-motion .flower-spray.is-visible .flower-sway { transform-origin: 26px 162px; animation: flower-settle 7000ms ease-in-out calc(900ms + var(--opening-offset, 0ms)) infinite; animation-play-state: paused; }
+  .hero-motion .silk-bow.is-visible > g { transform-origin: 61px 44px; animation: ribbon-settle 8000ms ease-in-out calc(1000ms + var(--opening-offset, 0ms)) infinite; animation-play-state: paused; }
+  .hero-motion[data-motion-active='true'] .flower-spray.is-visible .flower-sway, .hero-motion[data-motion-active='true'] .silk-bow.is-visible > g { animation-play-state: running; }
+  .hero-motion .floating-petal.is-visible .petal-drift { transform-origin: 14px 20px; animation: petal-settle 4500ms ease-in-out calc(var(--reveal-delay) + var(--opening-offset, 0ms)) both; }
+  @keyframes flower-settle { 0%, 100% { transform: rotate(0); } 35% { transform: rotate(-3deg); } 70% { transform: rotate(1.5deg); } }
+  @keyframes ribbon-settle { 0%, 100% { transform: rotate(0); } 35% { transform: rotate(3deg); } 72% { transform: rotate(-1.5deg); } }
+  @keyframes petal-settle { 0%, 100% { transform: translate(0, 0) rotate(0); } 40% { transform: translate(2px, -7px) rotate(14deg); } 75% { transform: translate(-1px, -2px) rotate(-5deg); } }
+  .hero-motion .hero-location span { transform: scaleX(0); transition: transform 1400ms cubic-bezier(.22, 1, .36, 1) 500ms; }
+  .hero-motion .hero-location.is-visible span { transform: scaleX(1); }
+  @media (max-width: 350px) {
+    .hero-heading { padding-inline: 20px; }
+    .groom { padding-right: 45px; }
+    .bride { padding-left: 35px; }
+    .photo-composition { padding-inline: 29px; }
+    .album-outline { inset-inline: 22px; }
+    .silk-bow { right: 0; width: 77px; }
+    .photo-seal { right: 5px; width: 63px; }
+    .flower-spray { left: 1px; width: 55px; height: 108px; }
+    .petal-heading { left: 10px; width: 13px; }
+    .petal-photo { right: 6px; width: 11px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-motion [data-hero-reveal] { transition: none; translate: none; }
+    .hero-motion [data-hero-reveal]:not(.is-visible) { opacity: 1; translate: none; }
+    .hero-motion .ampersand:not(.is-visible) { opacity: .3; }
+    .hero-motion .portrait-image, .hero-motion .hero-location span { transform: none; transition: none; }
+    .hero-motion .silk-bow path[pathLength] { stroke-dashoffset: 0; transition: none; }
+    .hero-motion .flower-stems path { stroke-dashoffset: 0; transition: none; }
+    .hero-motion .flower-spray .flower-sway, .hero-motion .silk-bow > g, .hero-motion .floating-petal .petal-drift { animation: none; }
+  }
+</style>
